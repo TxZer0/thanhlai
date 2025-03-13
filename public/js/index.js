@@ -5,7 +5,8 @@ async function renderPostList() {
     const searchInput = document.getElementById("search");
     const categoryButtons = document.querySelectorAll(".category");
 
-    
+    postList.innerHTML = '<div class="loading">Loading posts...</div>';
+
     async function countMarkdownFiles(basePath, prefix = "post") {
         let count = 0;
         while (true) {
@@ -35,18 +36,19 @@ async function renderPostList() {
 
     async function loadPosts() {
         let sections = {};
+        let loadingPromises = [];
 
         for (const category in posts) {
             sections[category] = [];
             const filePaths = posts[category];
 
-            for (let filePath of filePaths) {
+          
+            const categoryPromises = filePaths.map(async filePath => {
                 try {
                     const response = await fetch(filePath);
                     const text = await response.text();
 
                     let title = "";
-
                     
                     if (text.startsWith("---")) {
                         const endIndex = text.indexOf("---", 3);
@@ -63,13 +65,11 @@ async function renderPostList() {
                         }
                     }
 
-                    
                     if (!title) {
                         const headerMatch = text.match(/^#\s+(.*)/);
                         title = headerMatch ? headerMatch[1] : "Untitled";
                     }
 
-                    
                     const postDiv = document.createElement("div");
                     postDiv.classList.add("post");
                     const link = document.createElement("a");
@@ -80,8 +80,11 @@ async function renderPostList() {
                 } catch (err) {
                     console.error(`Error loading ${filePath}:`, err);
                 }
-            }
+            });
+
+            loadingPromises.push(...categoryPromises);
         }
+        await Promise.all(loadingPromises);
         renderPosts(sections);
     }
 
@@ -103,9 +106,19 @@ async function renderPostList() {
         }
     }
 
-    loadPosts();
+    const style = document.createElement('style');
+    style.textContent = `
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #00ffcc;
+            font-size: 1.2em;
+        }
+    `;
+    document.head.appendChild(style);
 
-    
+    await loadPosts();
+
     searchInput.addEventListener("input", function () {
         const searchTerm = searchInput.value.toLowerCase();
         document.querySelectorAll(".post").forEach(post => {
