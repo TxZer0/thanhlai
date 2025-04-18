@@ -42,6 +42,11 @@ async function renderPostList() {
             sections[category] = [];
             const filePaths = posts[category];
 
+            filePaths.sort((a, b) => {
+                const numA = parseInt(a.match(/post(\d+)\.md/)[1], 10);
+                const numB = parseInt(b.match(/post(\d+)\.md/)[1], 10);
+                return numA - numB;
+            })
           
             const categoryPromises = filePaths.map(async filePath => {
                 try {
