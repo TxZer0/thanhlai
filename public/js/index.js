@@ -22,7 +22,6 @@ async function renderPostList() {
         return count;
     }
 
-    
     const categories = {
         "Web Exploitation": "/thanhlai/post/web_exploitation/markdown",
     };
@@ -46,15 +45,15 @@ async function renderPostList() {
                 const numA = parseInt(a.match(/post(\d+)\.md/)[1], 10);
                 const numB = parseInt(b.match(/post(\d+)\.md/)[1], 10);
                 return numA - numB;
-            })
-          
-            const categoryPromises = filePaths.map(async filePath => {
+            });
+
+            const categoryPromises = filePaths.map(async (filePath, index) => {
                 try {
                     const response = await fetch(filePath);
                     const text = await response.text();
 
                     let title = "";
-                    
+
                     if (text.startsWith("---")) {
                         const endIndex = text.indexOf("---", 3);
                         if (endIndex !== -1) {
@@ -81,14 +80,23 @@ async function renderPostList() {
                     link.href = `public/html/post.html?file=${encodeURIComponent(filePath)}`;
                     link.innerHTML = `<h2>${title}</h2>`;
                     postDiv.appendChild(link);
-                    sections[category].push(postDiv);
+
+                    return { index, postDiv };
                 } catch (err) {
                     console.error(`Error loading ${filePath}:`, err);
+                    return null;
                 }
             });
 
+            const resolvedPosts = await Promise.all(categoryPromises);
+            resolvedPosts
+                .filter(p => p !== null)
+                .sort((a, b) => a.index - b.index)
+                .forEach(p => sections[category].push(p.postDiv));
+
             loadingPromises.push(...categoryPromises);
         }
+
         await Promise.all(loadingPromises);
         renderPosts(sections);
     }
@@ -131,7 +139,6 @@ async function renderPostList() {
         });
     });
 
-    
     categoryButtons.forEach(button => {
         button.addEventListener("click", function () {
             const selectedCategory = button.getAttribute("data-category").toLowerCase();
