@@ -23,8 +23,8 @@ async function renderPostList() {
     }
 
     const categories = {
-        "Web Exploitation": "/post/web_exploitation/markdown",
-        "Forensics": "/post/forensics/markdown"
+        "Web Exploitation": "/thanhlai/post/web_exploitation/markdown",
+        "Forensics": "/thanhlai/post/forensics/markdown"
     };
 
     let posts = {};
