@@ -38,7 +38,7 @@ async function renderPostList() {
     let currentCategory = "Web Exploitation";
     if (window.location.hash) {
         const hashCategory = decodeURIComponent(window.location.hash.substring(1));
-        if (categories[hashCategory]) {
+        if (posts[hashCategory]) {
             currentCategory = hashCategory;
         }
     }
