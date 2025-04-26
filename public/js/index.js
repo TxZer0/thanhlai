@@ -162,5 +162,18 @@ async function renderPostList() {
         });
     });
 
-    await loadPosts("Web Exploitation");
+    if (window.location.hash) {
+        const hashCategory = decodeURIComponent(window.location.hash.substring(1));
+        categoryButtons.forEach(button => {
+            if (button.getAttribute("data-category") === hashCategory) {
+                button.click();
+            }
+        });
+    } else {
+        categoryButtons.forEach(button => {
+            if (button.getAttribute("data-category") === "Web Exploitation") {
+                button.click();
+            }
+        });
+    }
 }
