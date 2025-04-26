@@ -23,8 +23,8 @@ async function renderPostList() {
     }
 
     const categories = {
-        "Web Exploitation": "/thanhlai/post/web_exploitation/markdown",
-        "Forensics": "/thanhlai/post/forensics/markdown"
+        "Web Exploitation": "/post/web_exploitation/markdown",
+        "Forensics": "/post/forensics/markdown"
     };
 
     let posts = {};
@@ -36,6 +36,13 @@ async function renderPostList() {
 
 
     let currentCategory = "Web Exploitation";
+    if (window.location.hash) {
+        const hashCategory = decodeURIComponent(window.location.hash.substring(1));
+        if (categories[hashCategory]) {
+            currentCategory = hashCategory;
+        }
+    }
+    await loadPosts(currentCategory);
 
     async function loadPosts(selectedCategory = "Web Exploitation") {
         let sections = {};
@@ -83,7 +90,7 @@ async function renderPostList() {
                     const postDiv = document.createElement("div");
                     postDiv.classList.add("post");
                     const link = document.createElement("a");
-                    link.href = `public/html/post.html?file=${encodeURIComponent(filePath)}`;
+                    link.href = `public/html/post.html?file=${encodeURIComponent(filePath)}&category=${encodeURIComponent(selectedCategory)}`;
                     link.innerHTML = `<h2>${title}</h2>`;
                     postDiv.appendChild(link);
 

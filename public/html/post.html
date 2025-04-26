@@ -9,8 +9,16 @@
 </head>
 <body>
   <div class="overlay"></div>
-  <a class="back" href="/thanhlai/index.html">&larr; Back to Home</a>
+  <a class="back" href="#" id="back-link">&larr; Back to Home</a>
   <div class="post-content" id="post-content"></div>
   <script src="../js/post.js"></script>
+  <script>
+  const params = new URLSearchParams(window.location.search);
+  const category = params.get('category') || 'Web Exploitation';
+  document.getElementById('back-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = `/thanhlai/index.html#${encodeURIComponent(category)}`;
+  });
+</script>
 </body>
 </html>
