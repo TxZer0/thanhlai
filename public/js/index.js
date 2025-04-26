@@ -24,6 +24,7 @@ async function renderPostList() {
 
     const categories = {
         "Web Exploitation": "/thanhlai/post/web_exploitation/markdown",
+        "Forensics": "/thanhlai/post/forensics/markdown"
     };
 
     let posts = {};
@@ -33,11 +34,16 @@ async function renderPostList() {
         posts[category] = Array.from({ length: count }, (_, i) => `${basePath}/post${i + 1}.md`);
     }
 
-    async function loadPosts() {
+
+    let currentCategory = "Web Exploitation";
+
+    async function loadPosts(selectedCategory = "Web Exploitation") {
         let sections = {};
         let loadingPromises = [];
 
+
         for (const category in posts) {
+            if (category !== selectedCategory) continue;
             sections[category] = [];
             const filePaths = posts[category];
 
@@ -130,7 +136,6 @@ async function renderPostList() {
     `;
     document.head.appendChild(style);
 
-    await loadPosts();
 
     searchInput.addEventListener("input", function () {
         const searchTerm = searchInput.value.toLowerCase();
@@ -139,13 +144,16 @@ async function renderPostList() {
         });
     });
 
+
     categoryButtons.forEach(button => {
         button.addEventListener("click", function () {
-            const selectedCategory = button.getAttribute("data-category").toLowerCase();
-            document.querySelectorAll(".category-section").forEach(section => {
-                const sectionTitle = section.querySelector("h2").textContent.toLowerCase();
-                section.style.display = sectionTitle.includes(selectedCategory) ? "block" : "none";
-            });
+            categoryButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+            const selectedCategory = button.getAttribute("data-category");
+            currentCategory = selectedCategory;
+            loadPosts(selectedCategory);
         });
     });
+
+    await loadPosts("Web Exploitation");
 }

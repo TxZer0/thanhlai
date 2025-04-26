@@ -145,30 +145,26 @@ nav button:hover {
 
 .category-nav {
   display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
   justify-content: center;
-  gap: 10px;
-  color: #000000;
-  margin-top: 15px;
 }
 
 .category {
-  padding: 12px 20px;
+  background: none;
   border: none;
-  border-radius: 5px;
-  background: #00ffcc; 
-  font-size: 1rem;
+  color: #00ffcc;
+  font-size: 1.1em;
   cursor: pointer;
-  color: #000;
-  transition: transform 0.3s;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-.category:hover {
-  transform: scale(1.1);
-}
-
+.category:hover,
 .category.active {
-  background: #00ffcc;
-  color: black;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 a.back {
