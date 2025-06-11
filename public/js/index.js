@@ -24,7 +24,6 @@ async function renderPostList() {
 
     const categories = {
         "Web Exploitation": "/thanhlai/post/web_exploitation/markdown",
-        "Forensics": "/thanhlai/post/forensics/markdown",
         "Buffer Overflow": "/thanhlai/post/buffer_overflow/markdown",
         "Reverse Engineering": "/thanhlai/post/reverse_engineering/markdown",
     };
