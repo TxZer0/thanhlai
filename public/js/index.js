@@ -47,71 +47,55 @@ async function renderPostList() {
 
     async function loadPosts(selectedCategory = "Web Exploitation") {
         let sections = {};
-        let loadingPromises = [];
+        const filePaths = posts[selectedCategory] || [];
+        const postPromises = filePaths.map(async (filePath, index) => {
+            try {
+                const response = await fetch(filePath);
+                const text = await response.text();
 
+                let title = "";
 
-        for (const category in posts) {
-            if (category !== selectedCategory) continue;
-            sections[category] = [];
-            const filePaths = posts[category];
-
-            filePaths.sort((a, b) => {
-                const numA = parseInt(a.match(/post(\d+)\.md/)[1], 10);
-                const numB = parseInt(b.match(/post(\d+)\.md/)[1], 10);
-                return numA - numB;
-            });
-
-            const categoryPromises = filePaths.map(async (filePath, index) => {
-                try {
-                    const response = await fetch(filePath);
-                    const text = await response.text();
-
-                    let title = "";
-
-                    if (text.startsWith("---")) {
-                        const endIndex = text.indexOf("---", 3);
-                        if (endIndex !== -1) {
-                            const frontMatter = text.substring(3, endIndex).trim();
-                            const lines = frontMatter.split("\n");
-                            lines.forEach(line => {
-                                const [key, ...rest] = line.split(":");
-                                const value = rest.join(":").trim();
-                                if (key.trim().toLowerCase() === "title") {
-                                    title = value;
-                                }
-                            });
-                        }
+                if (text.startsWith("---")) {
+                    const endIndex = text.indexOf("---", 3);
+                    if (endIndex !== -1) {
+                        const frontMatter = text.substring(3, endIndex).trim();
+                        const lines = frontMatter.split("\n");
+                        lines.forEach(line => {
+                            const [key, ...rest] = line.split(":");
+                            const value = rest.join(":").trim();
+                            if (key.trim().toLowerCase() === "title") {
+                                title = value;
+                            }
+                        });
                     }
-
-                    if (!title) {
-                        const headerMatch = text.match(/^#\s+(.*)/);
-                        title = headerMatch ? headerMatch[1] : "Untitled";
-                    }
-
-                    const postDiv = document.createElement("div");
-                    postDiv.classList.add("post");
-                    const link = document.createElement("a");
-                    link.href = `public/html/post.html?file=${encodeURIComponent(filePath)}&category=${encodeURIComponent(selectedCategory)}`;
-                    link.innerHTML = `<h2>${title}</h2>`;
-                    postDiv.appendChild(link);
-
-                    return { index, postDiv };
-                } catch (err) {
-                    console.error(`Error loading ${filePath}:`, err);
-                    return null;
                 }
-            });
 
-            const resolvedPosts = await Promise.all(categoryPromises);
-            resolvedPosts
-                .filter(p => p !== null)
-                .sort((a, b) => a.index - b.index)
-                .forEach(p => sections[category].push(p.postDiv));
+                if (!title) {
+                    const headerMatch = text.match(/^#\s+(.*)/);
+                    title = headerMatch ? headerMatch[1] : "Untitled";
+                }
 
-            loadingPromises.push(...categoryPromises);
-        }
+                const postDiv = document.createElement("div");
+                postDiv.classList.add("post");
+                const link = document.createElement("a");
+                link.href = `public/html/post.html?file=${encodeURIComponent(filePath)}&category=${encodeURIComponent(selectedCategory)}`;
+                link.innerHTML = `<h2>${title}</h2>`;
+                postDiv.appendChild(link);
 
-        await Promise.all(loadingPromises);
+                return { index, postDiv };
+            } catch (err) {
+                console.error(`Error loading ${filePath}:`, err);
+                return null;
+            }
+        });
+
+        const resolvedPosts = await Promise.all(postPromises);
+
+        sections[selectedCategory] = resolvedPosts
+            .filter(p => p !== null)
+            .sort((a, b) => a.index - b.index)
+            .map(p => p.postDiv);
+
         renderPosts(sections);
     }
 
