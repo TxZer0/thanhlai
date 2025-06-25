@@ -8,7 +8,7 @@ async function renderPostList() {
     postList.innerHTML = '<div class="loading">Loading posts...</div>';
 
     async function countMarkdownFiles(basePath) {
-        if (basePath.includes("web_exploitation")) return 15;
+        if (basePath.includes("web_exploitation")) return 16;
         if (basePath.includes("buffer_overflow")) return 11;
         if (basePath.includes("reverse_engineering")) return 10;
         return 0;
