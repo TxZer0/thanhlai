@@ -31,7 +31,7 @@
 <p>Tạo script để dò từng kí tự:</p>
 
 ```
-from pwn import *
+from pwnable import *
 import warnings
 warnings.filterwarnings("ignore")
 

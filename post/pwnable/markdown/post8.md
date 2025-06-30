@@ -1,20 +1,20 @@
 # [PearlCTF-2024] flag_finder
 <p>Dòng 48, đọc tối đa 254 byte từ stdin vào vùng nhớ v15. Sau khi gọi sub_4012FD, chương trình thực thi nội dung tại địa chỉ v15.</p>
 
-![alt text](/thanhlai/post/buffer_overflow/image/post8/image.png)
+![alt text](/thanhlai/post/pwnable/image/post8/image.png)
 
 <p>Hàm sub_4012FD thiết lập seccomp để hạn chế các system call được phép.</p>
 
-![alt text](/thanhlai/post/buffer_overflow/image/post8/image-1.png)
+![alt text](/thanhlai/post/pwnable/image/post8/image-1.png)
 
 <p>Sử dụng công cụ seccomp-tools để kiểm tra các system call được phép sử dụng. Chương trình chỉ cho phép đúng một system call là write, tất cả syscall khác đều bị chặn (KILL).</p>
 
-![alt text](/thanhlai/post/buffer_overflow/image/post8/image-3.png)
+![alt text](/thanhlai/post/pwnable/image/post8/image-3.png)
 
 <p>Khi nhập chuỗi "abcd", chương trình cố gắng thực thi nội dung tại địa chỉ v15. Do đây không phải shellcode hợp lệ, quá trình thực thi gây lỗi. Trong quá trình debug, quan sát thấy nội dung flag đã được lưu sẵn trên stack, bắt đầu tại địa chỉ rsp + 0x18.
 Do chương trình chỉ cho phép syscall write, ta có thể viết shellcode đơn giản để đọc flag từ stack và in nó ra stdout.</p>
 
-![alt text](/thanhlai/post/buffer_overflow/image/post8/image-2.png)
+![alt text](/thanhlai/post/pwnable/image/post8/image-2.png)
 
 ```
     mov rax, 1          ; syscall write
@@ -28,7 +28,7 @@ Do chương trình chỉ cho phép syscall write, ta có thể viết shellcode 
 <p>Script exploit:</p>
 
 ```
-from pwn import *
+from pwnable import *
 
 p = process('./flag-finder')  
 
@@ -50,4 +50,4 @@ p.interactive()
 
 <p>Chạy script và lấy được flag thành công.</p>
 
-![alt text](/thanhlai/post/buffer_overflow/image/post8/image-4.png)
+![alt text](/thanhlai/post/pwnable/image/post8/image-4.png)

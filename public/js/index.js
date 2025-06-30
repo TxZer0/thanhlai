@@ -9,14 +9,14 @@ async function renderPostList() {
 
     async function countMarkdownFiles(basePath) {
         if (basePath.includes("web_exploitation")) return 16;
-        if (basePath.includes("buffer_overflow")) return 13;
+        if (basePath.includes("pwnable")) return 13;
         if (basePath.includes("reverse_engineering")) return 10;
         return 0;
     }
 
     const categories = {
         "Web Exploitation": "/thanhlai/post/web_exploitation/markdown",
-        "Buffer Overflow": "/thanhlai/post/buffer_overflow/markdown",
+        "Buffer Overflow": "/thanhlai/post/pwnable/markdown",
         "Reverse Engineering": "/thanhlai/post/reverse_engineering/markdown",
     };
 
