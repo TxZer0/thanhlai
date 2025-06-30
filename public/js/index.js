@@ -9,7 +9,7 @@ async function renderPostList() {
 
     async function countMarkdownFiles(basePath) {
         if (basePath.includes("web_exploitation")) return 16;
-        if (basePath.includes("pwnable")) return 13;
+        if (basePath.includes("pwnable")) return 14;
         if (basePath.includes("reverse_engineering")) return 10;
         return 0;
     }
