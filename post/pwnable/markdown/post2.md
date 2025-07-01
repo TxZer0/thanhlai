@@ -25,6 +25,10 @@ Tiếp tục, free chunk ở 0x7fffffffdea0 (so với 0x7fffffffde90 thì cách 
 
 ![alt text](/thanhlai/post/pwnable/image/post13/image-2.png)
 
+Ta có thể tính được khoảng cách để dữ liệu chunk đó override tới return address là 0x58 byte.
+
+![alt text](/thanhlai/post/pwnable/image/post13/image-3.png)
+
 Còn một vấn đề là nếu như ta trực tiếp set giá trị của rsp ở lệnh ret ngay lần đầu bằng địa chỉ hàm sh thì nó sẽ bị lỗi. Lỗi xuất phát từ việc địa chỉ của rsp (0x7fffffffdef8) không chia hết cho 16. Để giải quyết lỗi này, ta chỉ cần return về lệnh ret của hàm main (hoặc sh) một lần nữa. Note: để kiểm tra nhanh một địa chỉ có chia hết cho 16 không, ta có thể nhìn 4 bit cuối của địa chỉ (tức là chữ số cuối trong hệ hex). Nếu nó kết thúc bằng <code>0</code>, <code>...0</code>, <code>...10</code>, v.v., thì địa chỉ đó chia hết cho 16.
 
 ![alt text](/thanhlai/post/pwnable/image/post13/image-4.png)
